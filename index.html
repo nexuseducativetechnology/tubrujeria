@@ -1,108 +1,404 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario - Tu Brujería WEB</title>
+    <title>Catálogo - Ti Brujería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
     <style>
-        /* Estilos generales en modo oscuro */
+        :root {
+            --bg-color: #120b0b;
+            --card-bg-color: #000000;
+            --primary-accent: #c41212;
+            --text-main: #ffffff;
+            --text-secondary: #aaaaaa;
+            --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-gothic: 'Pirata One', serif;
+            --whatsapp-green: #00c853;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            background-image: url("https://www.transparenttextures.com/patterns/soft-kill.png");
+            background-repeat: repeat;
+            color: var(--text-main);
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        
+
         .introduccion {
             text-align: center;
-            padding: 4rem 1rem;
-            background-color: #1e1e1e;
-            border-bottom: 2px solid #333;
+            padding: 4rem 1rem 2rem 1rem;
+            max-width: 800px;
+        }
+
+        .introduccion h1 {
+            color: var(--primary-accent);
+            font-family: var(--font-gothic);
+            font-size: 5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+            font-weight: normal;
+            -webkit-text-stroke: 1px #ffffff;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+        }
+
+        .introduccion p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .search-section {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background-color: #2a1a1a;
+            color: var(--text-main);
+            border: 1px solid #442222;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-accent);
+            color: #ffffff;
+            border-color: var(--primary-accent);
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(196, 18, 18, 0.5);
         }
 
         .catalogo {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
-            padding: 40px;
+            width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
+            padding: 20px;
+            margin-bottom: 50px;
         }
 
-        .producto {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
+        .producto-card {
+            background-color: var(--card-bg-color);
             border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+            border: 1px solid #221111;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(196, 18, 18, 0.3);
+            border-color: #551111;
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 250px;
+            background-color: #111;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .producto-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .card-body {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            color: var(--primary-accent);
+            font-family: var(--font-gothic);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            font-weight: normal;
+            margin: 0 0 5px 0;
+            line-height: 1.1;
+            -webkit-text-stroke: 0.5px #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .product-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0 0 15px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .final-price {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .promo-badge {
+            color: var(--text-main);
+            border: 1px solid var(--primary-accent);
+            background-color: rgba(196, 18, 18, 0.15);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .whatsapp-btn {
+            background-color: var(--whatsapp-green);
+            color: #000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: auto;
             transition: all 0.3s ease;
         }
 
-        .producto:hover {
-            transform: translateY(-5px);
-            border-color: #bb86fc; /* Color de acento */
+        /* --- ESTILOS DEL MODAL (ZOOM) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
         }
 
-        .precio {
-            font-size: 1.4rem;
-            color: #03dac6;
-            font-weight: bold;
-            margin: 10px 0;
+        .modal-contenido {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(196, 18, 18, 0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
 
-        .estado-chip {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            background-color: #333;
+        .cerrar-modal {
+            position: absolute;
+            top: 20px; right: 30px;
+            color: #fff; font-size: 50px;
+            cursor: pointer; z-index: 2100;
         }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            color: white; font-size: 4rem;
+            background: rgba(0,0,0,0.5);
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border-radius: 50%;
+            z-index: 2100; transition: color 0.3s;
+        }
+
+        .modal-nav:hover { color: var(--primary-accent); }
+        .nav-prev { left: 20px; }
+        .nav-next { right: 20px; }
+
+        .loader-container { grid-column: 1 / -1; text-align: center; padding: 50px; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #333; border-top: 4px solid var(--primary-accent);
+            border-radius: 50%; animation: girar 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes girar { 100% { transform: rotate(360deg); } }
     </style>
 </head>
+
 <body>
 
     <header class="introduccion">
-        <h1>Tu Brujería WEB</h1>
-        <p>Catálogo informativo y de ventas con stock actualizado en tiempo real.</p>
+        <h1>Tu Brujería</h1>
+        <p>Tu Estilo, Tu Ritual. Confección de porta termos y yerberos exclusivos.</p>
     </header>
 
+    <section class="search-section">
+        <div id="filter-container" class="filter-container">
+            <button class="filter-btn active" onclick="filtrarCatalogo('TODOS', this)">TODOS</button>
+        </div>
+    </section>
+
     <main id="contenedor-catalogo" class="catalogo">
-        <p style="text-align: center; width: 100%;">Conectando con la base de datos...</p>
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p>Conectando con el inventario...</p>
+        </div>
     </main>
 
+    <div id="modal-imagen" class="modal" onclick="cerrarModalExterno(event)">
+        <span class="cerrar-modal" onclick="cerrarModalManual()">&times;</span>
+        <div class="modal-nav nav-prev" id="btn-prev" onclick="cambiarFoto(-1, event)">&#10094;</div>
+        
+        <img class="modal-contenido" id="imagen-ampliada">
+        
+        <div class="modal-nav nav-next" id="btn-next" onclick="cambiarFoto(1, event)">&#10095;</div>
+    </div>
+
     <script>
-        // Tu URL de Google Apps Script ya integrada
         const url_api = 'https://script.google.com/macros/s/AKfycbzko6Izw0x7rJg0Y91LPEyPeUJgB1hY9uhPy3maaViB41SSV6gXC4j-2jpFRFqtw3CjUg/exec';
+        let productosGlobal = [];
+        let galeriaActual = [];
+        let indiceFotoActual = 0;
+
+        // NUEVO CONVERTIDOR: Más rápido y evita bloqueos de Drive
+        function convertirDriveUrl(url) {
+            if (!url || typeof url !== 'string' || url.length < 15) return '';
+            let id = '';
+            const regex = /\/file\/d\/([a-zA-Z0-9_-]+)|id=([a-zA-Z0-9_-]+)/;
+            const match = url.match(regex);
+            if (match) id = match[1] || match[2];
+            // Servidor LH3: el método más confiable para 2026
+            return id ? `https://lh3.googleusercontent.com/d/${id}` : url;
+        }
 
         async function obtenerDatos() {
             try {
-                const response = await fetch(url_api);
-                const productos = await response.json();
-                renderizarProductos(productos);
+                const response = await fetch(url_api + '?t=' + new Date().getTime());
+                const dataRaw = await response.json();
+                
+                productosGlobal = dataRaw.map(p => {
+                    let obj = {};
+                    for (let key in p) obj[key.trim().toLowerCase()] = p[key];
+                    return obj;
+                });
+
+                generarFiltros(productosGlobal);
+                renderizarProductos(productosGlobal);
             } catch (error) {
-                console.error("Error cargando el catálogo:", error);
-                document.getElementById('contenedor-catalogo').innerHTML = "<p>Hubo un error al cargar los datos.</p>";
+                document.getElementById('contenedor-catalogo').innerHTML = "<p>Error al cargar el ritual.</p>";
             }
+        }
+
+        function generarFiltros(lista) {
+            const container = document.getElementById('filter-container');
+            const categorias = [...new Set(lista.map(p => p.categoria).filter(c => c))];
+            categorias.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = cat;
+                btn.onclick = function () { filtrarCatalogo(cat, this); };
+                container.appendChild(btn);
+            });
+        }
+
+        function filtrarCatalogo(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filtrados = cat === 'TODOS' ? productosGlobal : productosGlobal.filter(p => p.categoria === cat);
+            renderizarProductos(filtrados);
         }
 
         function renderizarProductos(lista) {
             const contenedor = document.getElementById('contenedor-catalogo');
-            contenedor.innerHTML = ""; // Limpiar mensaje de carga
-
+            contenedor.innerHTML = "";
             lista.forEach(p => {
-                // Filtramos por si hay filas vacías en el Sheets
                 if (!p.nombre) return;
+                
+                const img1 = convertirDriveUrl(p.imagen1 || p.imagen || '');
+                const img2 = convertirDriveUrl(p.imagen2 || '');
+                const img3 = convertirDriveUrl(p.imagen3 || '');
 
                 const card = document.createElement('div');
-                card.className = 'producto';
+                card.className = 'producto-card';
                 card.innerHTML = `
-                    <h3>${p.nombre}</h3>
-                    <p style="color: #bbb;">${p.descripcion || 'Sin descripción'}</p>
-                    <p class="precio">$${p.precio || '0'}</p>
-                    <span class="estado-chip">${p.estado || 'Consultar'}</span>
+                    <div class="card-img-container">
+                        <img src="${img1}" class="producto-img" 
+                             onclick="abrirGaleria(['${img1}', '${img2}', '${img3}'])" 
+                             onerror="this.src='https://via.placeholder.com/300/111/444?text=Imagen+No+Válida'">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">${p.nombre}</h3>
+                        <p class="product-description">${p.descripcion || ''}</p>
+                        <div class="final-price">$${p.precio}</div>
+                        <span class="promo-badge">${p.estado || 'Disponible'}</span>
+                        <a href="https://wa.me/5493624208887?text=Hola! Me interesa ${p.nombre}" target="_blank" class="whatsapp-btn">
+                            Consultar <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
                 `;
                 contenedor.appendChild(card);
             });
+        }
+
+        function abrirGaleria(fotos) {
+            // Filtramos solo los que tengan un link real (que contenga 'googleusercontent')
+            galeriaActual = fotos.filter(f => f && f.includes('googleusercontent'));
+            if (galeriaActual.length === 0) return;
+            
+            indiceFotoActual = 0;
+            const imgAmpliada = document.getElementById("imagen-ampliada");
+            
+            imgAmpliada.src = galeriaActual[0];
+            document.getElementById("modal-imagen").style.display = "flex";
+            
+            // Mostrar flechas solo si hay más de una foto real
+            const flechas = galeriaActual.length > 1 ? "flex" : "none";
+            document.getElementById("btn-prev").style.display = flechas;
+            document.getElementById("btn-next").style.display = flechas;
+        }
+
+        function cambiarFoto(dir, e) {
+            if (e) e.stopPropagation();
+            indiceFotoActual = (indiceFotoActual + dir + galeriaActual.length) % galeriaActual.length;
+            document.getElementById("imagen-ampliada").src = galeriaActual[indiceFotoActual];
+        }
+
+        function cerrarModalManual() {
+            document.getElementById("modal-imagen").style.display = "none";
+        }
+
+        function cerrarModalExterno(e) {
+            if (e.target.id === "modal-imagen") cerrarModalManual();
         }
 
         obtenerDatos();
