@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Tu Brujería WEB</title>
+    <style>
+        /* Estilos generales en modo oscuro */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .introduccion {
+            text-align: center;
+            padding: 4rem 1rem;
+            background-color: #1e1e1e;
+            border-bottom: 2px solid #333;
+        }
+
+        .catalogo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .producto {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .producto:hover {
+            transform: translateY(-5px);
+            border-color: #bb86fc; /* Color de acento */
+        }
+
+        .precio {
+            font-size: 1.4rem;
+            color: #03dac6;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .estado-chip {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="introduccion">
+        <h1>Tu Brujería WEB</h1>
+        <p>Catálogo informativo y de ventas con stock actualizado en tiempo real.</p>
+    </header>
+
+    <main id="contenedor-catalogo" class="catalogo">
+        <p style="text-align: center; width: 100%;">Conectando con la base de datos...</p>
+    </main>
+
+    <script>
+        // Tu URL de Google Apps Script ya integrada
+        const url_api = 'https://script.google.com/macros/s/AKfycbzko6Izw0x7rJg0Y91LPEyPeUJgB1hY9uhPy3maaViB41SSV6gXC4j-2jpFRFqtw3CjUg/exec';
+
+        async function obtenerDatos() {
+            try {
+                const response = await fetch(url_api);
+                const productos = await response.json();
+                renderizarProductos(productos);
+            } catch (error) {
+                console.error("Error cargando el catálogo:", error);
+                document.getElementById('contenedor-catalogo').innerHTML = "<p>Hubo un error al cargar los datos.</p>";
+            }
+        }
+
+        function renderizarProductos(lista) {
+            const contenedor = document.getElementById('contenedor-catalogo');
+            contenedor.innerHTML = ""; // Limpiar mensaje de carga
+
+            lista.forEach(p => {
+                // Filtramos por si hay filas vacías en el Sheets
+                if (!p.nombre) return;
+
+                const card = document.createElement('div');
+                card.className = 'producto';
+                card.innerHTML = `
+                    <h3>${p.nombre}</h3>
+                    <p style="color: #bbb;">${p.descripcion || 'Sin descripción'}</p>
+                    <p class="precio">$${p.precio || '0'}</p>
+                    <span class="estado-chip">${p.estado || 'Consultar'}</span>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        obtenerDatos();
+    </script>
+</body>
+</html>
